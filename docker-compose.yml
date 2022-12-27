@@ -1,0 +1,11 @@
+services:
+  note-front:
+    build:
+      context: ./note-front
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+networks:
+  default:
+    driver: bridge
+    external: false
