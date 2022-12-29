@@ -1,21 +1,14 @@
-package com.odas.noteapp.services;
+package com.odas.backend.services;
 
-import com.odas.noteapp.entities.Note;
-import com.odas.noteapp.repositories.NoteRepository;
+import com.odas.backend.entities.Note;
+import com.odas.backend.repositories.NoteRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

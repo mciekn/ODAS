@@ -1,29 +1,55 @@
+version: "3.9"
 services:
-  notatex-db:
-    image: postgres
-    environment:
-      - POSTGRES_USER=notatex
-      - POSTGRES_PASSWORD=notatex
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    image: frontend:latest
     ports:
-      - "5432:5432"
-  notatex-app:
+      - '3000:3000'
+    networks:
+      - network
     depends_on:
-      - notatex-db
+      - backend
+  backend:
+    container_name: backend
     build:
-      context: ./noteapp
+      context: backend
       dockerfile: Dockerfile
+    image: backend:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/backend
     ports:
-      - "5050:8080"
-  notatex-front:
-    build:
-      context: ./note-front
-      dockerfile: Dockerfile
-      args:
-        - TARGET_PLATFORM=${TARGET_PLATFORM}
+      - '8080:8080'
+    networks:
+      - network
+    depends_on:
+      - db
+  db:
+    image: postgres:15.0-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=backend
     ports:
-      - "8080:3000"
-networks:
-  default:
-    driver: bridge
-    external: false
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - network
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local

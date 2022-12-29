@@ -2,24 +2,20 @@ package com.odas.noteapp.entities;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Getter
+@Table
 @Setter
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 31)
-    private String name;
-
-    @Lob
-    @Column(name = "contents")
-    private byte[] contents;
+    private String content;
 }

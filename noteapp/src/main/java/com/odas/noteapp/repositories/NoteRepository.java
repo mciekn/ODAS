@@ -9,6 +9,4 @@ import java.util.Optional;
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
 
-    Optional<Note> findById(long id);
-    Optional<Note> findByName(String name);
 }
