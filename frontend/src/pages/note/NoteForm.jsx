@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import {noteApi} from "../../api/noteApi";
+import MarkdownIt from 'markdown-it';
 
 export const NoteForm = () => {
     const navigate = useNavigate();
@@ -9,12 +10,16 @@ export const NoteForm = () => {
     const [note, setNote] = useState({
         content: ''
     });
+    let [renderedHTML, setRenderedHTML] = useState("");
 
     useEffect(() => {
         if (noteId !== 'new') {
+            let md = new MarkdownIt()
             noteApi.getById(noteId)
                 .then((res) => {
                     setNote(res.data);
+                    let renderedHTML = md.render(res.data.content);
+                    setRenderedHTML(renderedHTML);
                 });
         }
     }, [noteId]);
@@ -25,6 +30,10 @@ export const NoteForm = () => {
         const content = target.name;
 
         setNote({...note, [content]: value,});
+
+        let md = new MarkdownIt()
+        let renderedHTML = md.render(value);
+        setRenderedHTML(renderedHTML);
     }
 
     const handleSubmit = async (event) => {
@@ -57,6 +66,14 @@ export const NoteForm = () => {
                 <FormGroup>
                     <Button color="primary" type="submit">Save</Button>{' '}
                     <Button color="secondary" tag={Link} to="/notes">Cancel</Button>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="markdown">Rendered MD</Label>
+                    <div
+                        dangerouslySetInnerHTML={{ __html: renderedHTML }}
+                        className="rendered-html-output"
+                    >
+                    </div>
                 </FormGroup>
             </Form>
         </Container>
