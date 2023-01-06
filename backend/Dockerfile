@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine as builder
+FROM --platform=linux/amd64 openjdk:17-jdk-alpine as builder
 
 WORKDIR app
 
@@ -13,7 +13,7 @@ RUN ./mvnw package -DskipTests
 ARG JAR_FILE=target/*.jar
 RUN java -Djarmode=layertools -jar ${JAR_FILE} extract --destination target/extracted
 
-FROM openjdk:8-jdk-alpine
+FROM --platform=linux/amd64 openjdk:17-jdk-alpine
 
 WORKDIR app
 ARG EXTRACTED=app/target/extracted
