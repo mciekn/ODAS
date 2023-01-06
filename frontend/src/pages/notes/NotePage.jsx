@@ -2,19 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, Table} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {noteApi} from "../../api/noteApi";
+import {useKeycloak} from "@react-keycloak/web";
 
 export const NotePage = () => {
+    const {keycloak} = useKeycloak();
     const [notes, setNotes] = useState([]);
 
     useEffect(() => {
-        noteApi.getAll()
+        noteApi.getAll(keycloak.token)
             .then((res) => {
                 setNotes(res.data);
             })
     }, []);
 
     const remove = (id) => {
-        noteApi.delete(id)
+        noteApi.delete(id, keycloak.token)
             .then(() => {
                 setNotes((notes) => notes.filter((note) => note.id !== id));
             });

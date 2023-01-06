@@ -3,8 +3,10 @@ import {Link, useNavigate, useParams} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import {noteApi} from "../../api/noteApi";
 import MarkdownIt from 'markdown-it';
+import {useKeycloak} from "@react-keycloak/web";
 
 export const NoteForm = () => {
+    const {keycloak} = useKeycloak();
     const navigate = useNavigate();
     const {noteId} = useParams();
     const [note, setNote] = useState({
@@ -15,13 +17,14 @@ export const NoteForm = () => {
     useEffect(() => {
         if (noteId !== 'new') {
             let md = new MarkdownIt()
-            noteApi.getById(noteId)
+            noteApi.getById(noteId, keycloak.token)
                 .then((res) => {
                     setNote(res.data);
                     let renderedHTML = md.render(res.data.content);
                     setRenderedHTML(renderedHTML);
                 });
         }
+        keycloak.updateToken()
     }, [noteId]);
 
     const handleChange = (event) => {
@@ -40,9 +43,9 @@ export const NoteForm = () => {
         event.preventDefault();
 
         if (note.id) {
-            await noteApi.update(note.id, note)
+            await noteApi.update(note.id, note, keycloak.token)
         } else {
-            await noteApi.create(note)
+            await noteApi.create(note, keycloak.token)
         }
         navigate('/notes')
     }
