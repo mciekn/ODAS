@@ -4,6 +4,7 @@ import {NavBar} from "./components/NavBar";
 import {Home} from "./pages/home/Home";
 import {NotePage} from "./pages/notes/NotePage";
 import {NoteForm} from "./pages/note/NoteForm";
+import {ProtectedRoute} from "./components/ProtectedRoute";
 
 export default function App(){
     return (
@@ -11,8 +12,10 @@ export default function App(){
             <NavBar/>
             <Routes>
                 <Route index element={<Home/>}/>
-                <Route path='/notes' element={<NotePage/>}/>
-                <Route path='/notes/:noteId' element={<NoteForm/>}/>
+                <Route element={<ProtectedRoute/>}>
+                    <Route path='/notes' element={<NotePage/>}/>
+                    <Route path='/notes/:noteId' element={<NoteForm/>}/>
+                </Route>
             </Routes>
         </>
     )
