@@ -5,9 +5,14 @@ import com.odas.backend.services.NoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -18,22 +23,34 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping
-    Collection<Note> findAll(){
-        log.debug("Find all notes");
-        return noteService.findAll();
+    Collection<Note> findAll(@AuthenticationPrincipal Jwt principal){
+        log.debug("Find all notes for user with id"+principal.getSubject());
+        return noteService.findAll()
+                .stream()
+                .filter(n -> n.getNoteAccessList().contains(principal.getSubject()))
+                .collect(Collectors.toList());
     }
 
 
     @GetMapping("/{id}")
-    Note findById(@PathVariable Long id){
+    Note findById(@PathVariable Long id, @AuthenticationPrincipal Jwt principal){
         log.debug("Find note with id: {}", id);
-        return noteService.findById(id);
+        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject())){
+            return noteService.findById(id);
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "401");
+        }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    Note createNote(@RequestBody Note note){
-        log.debug("Create note: {}", note);
+    Note createNote(@RequestBody Note note, @AuthenticationPrincipal Jwt principal){
+        log.debug("Create note: {}", note, "for user with id: {}", principal.getSubject());
+        if(note.getNoteAccessList() == null){
+            note.setNoteAccessList(new ArrayList<>());
+            note.getNoteAccessList().add(principal.getSubject());
+        }
         return noteService.save(note);
     }
 

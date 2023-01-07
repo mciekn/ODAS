@@ -2,10 +2,8 @@ package com.odas.backend.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -22,5 +20,8 @@ public class Note {
     private Long id;
 
     private String content;
+
+    @ElementCollection
+    private List<String> noteAccessList;
 
 }
