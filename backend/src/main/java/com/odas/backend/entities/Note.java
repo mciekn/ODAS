@@ -21,6 +21,8 @@ public class Note {
 
     private String content;
 
+    private String accessLevel;
+
     @ElementCollection
     private List<String> noteAccessList;
 

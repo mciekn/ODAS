@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +28,7 @@ public class NoteController {
         log.debug("Find all notes for user with id"+principal.getSubject());
         return noteService.findAll()
                 .stream()
-                .filter(n -> n.getNoteAccessList().contains(principal.getSubject()))
+                .filter(n -> n.getNoteAccessList().contains(principal.getSubject()) || Objects.equals(n.getAccessLevel(), "2"))
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +36,7 @@ public class NoteController {
     @GetMapping("/{id}")
     Note findById(@PathVariable Long id, @AuthenticationPrincipal Jwt principal){
         log.debug("Find note with id: {}", id);
-        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject())){
+        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject()) || Objects.equals(noteService.findById(id).getAccessLevel(), "2")){
             return noteService.findById(id);
         }
         else{
@@ -47,7 +48,7 @@ public class NoteController {
     @ResponseStatus(HttpStatus.CREATED)
     Note createNote(@RequestBody Note note, @AuthenticationPrincipal Jwt principal){
         log.debug("Create note: {}", note, "for user with id: {}", principal.getSubject());
-        if(note.getNoteAccessList() == null){
+        if(note.getNoteAccessList() == null) {
             note.setNoteAccessList(new ArrayList<>());
             note.getNoteAccessList().add(principal.getSubject());
         }

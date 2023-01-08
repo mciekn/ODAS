@@ -10,7 +10,8 @@ export const NoteForm = () => {
     const navigate = useNavigate();
     const {noteId} = useParams();
     const [note, setNote] = useState({
-        content: ''
+        content: '',
+        accessLevel: '0'
     });
     let [renderedHTML, setRenderedHTML] = useState("");
 
@@ -39,13 +40,23 @@ export const NoteForm = () => {
         setRenderedHTML(renderedHTML);
     }
 
+    const onChangeValue = (event) => {
+        const accessValue = event.target.value;
+        const accessLevel = event.target.name;
+        setNote({...note, [accessLevel]: accessValue});
+        console.log(accessValue);
+
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (note.id) {
             await noteApi.update(note.id, note, keycloak.token)
+            console.log(note)
         } else {
             await noteApi.create(note, keycloak.token)
+            console.log(note)
         }
         navigate('/notes')
     }
@@ -65,6 +76,13 @@ export const NoteForm = () => {
                         value={note.content || ""}
                         onChange={handleChange}
                         autoComplete="content"/>
+                </FormGroup>
+                <FormGroup>
+                    <div onChange={onChangeValue} >
+                        <input type="radio" value="0" name="accessLevel" /> Private
+                        <input type="radio" value="1" name="accessLevel" /> Shared
+                        <input type="radio" value="2" name="accessLevel" /> Public
+                    </div>
                 </FormGroup>
                 <FormGroup>
                     <Button color="primary" type="submit">Save</Button>{' '}
