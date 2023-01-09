@@ -4,6 +4,7 @@ import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import {noteApi} from "../../api/noteApi";
 import MarkdownIt from 'markdown-it';
 import {useKeycloak} from "@react-keycloak/web";
+import { AES, format, enc } from 'crypto-js';
 
 export const NoteForm = () => {
     const {keycloak} = useKeycloak();
@@ -14,6 +15,7 @@ export const NoteForm = () => {
         accessLevel: '0'
     });
     let [renderedHTML, setRenderedHTML] = useState("");
+    const [password, setPassword] = useState("");
 
     useEffect(() => {
         if (noteId !== 'new') {
@@ -45,7 +47,31 @@ export const NoteForm = () => {
         const accessLevel = event.target.name;
         setNote({...note, [accessLevel]: accessValue});
         console.log(accessValue);
+    }
 
+    function encrypt(){
+        let pswd = password;
+        let md = new MarkdownIt()
+        console.log("encrypting..");
+        console.log(password);
+        let enc = note.content;
+        console.log(enc);
+        let cipher = AES.encrypt(enc, pswd).toString();
+        setNote({...note, content: cipher});
+        let renderedHTML = md.render(cipher);
+        setRenderedHTML(renderedHTML);
+        console.log(cipher);
+    }
+
+    function decrypt(){
+        let pswd = password;
+        let md = new MarkdownIt()
+        console.log("decrypting..")
+        let encrypted = note.content;
+        let decrypted = AES.decrypt(encrypted, pswd).toString(enc.Utf8);
+        setNote({...note, content: decrypted});
+        let renderedHTML = md.render(decrypted);
+        setRenderedHTML(renderedHTML);
     }
 
     const handleSubmit = async (event) => {
@@ -78,10 +104,30 @@ export const NoteForm = () => {
                         autoComplete="content"/>
                 </FormGroup>
                 <FormGroup>
-                    <div onChange={onChangeValue} >
-                        <input type="radio" value="0" name="accessLevel" /> Private
-                        <input type="radio" value="1" name="accessLevel" /> Shared
-                        <input type="radio" value="2" name="accessLevel" /> Public
+                    <Label for="encrypt">Encrypt with password</Label>
+                    <div>
+                        <input
+                            id="password"
+                            name="password"
+                            type="text"
+                            value={password || ""}
+                            onInput={e => setPassword(e.target.value)}
+                        />{' '}
+                        <Button color="primary" onClick={encrypt} >Encrypt</Button>{' '}
+                        <Button color="secondary" onClick={decrypt} >Decrypt</Button>{' '}
+                    </div>
+                </FormGroup>
+                <FormGroup>
+                    <div class="btn-group btn-group-toggle" onChange={onChangeValue} >
+                        <label className="btn btn-secondary active">
+                            <input type="radio" value="0" name="accessLevel" /> Private
+                        </label>
+                        <label className="btn btn-secondary">
+                            <input type="radio" value="1" name="accessLevel" /> Shared
+                        </label>
+                        <label className="btn btn-secondary">
+                            <input type="radio" value="2" name="accessLevel" /> Public
+                        </label>
                     </div>
                 </FormGroup>
                 <FormGroup>

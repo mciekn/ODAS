@@ -56,8 +56,11 @@ public class NoteController {
     }
 
     @PutMapping("/{id}")
-    Note update(@PathVariable Long id, @RequestBody Note note){
+    Note update(@PathVariable Long id, @RequestBody Note note, @AuthenticationPrincipal Jwt principal){
         log.debug("Find note with id: {}, with note {}", id, note);
+        if(!note.getNoteAccessList().contains(principal.getSubject())){
+            note.getNoteAccessList().add(principal.getSubject());
+        }
         return noteService.update(id, note);
     }
 
