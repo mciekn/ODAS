@@ -26,4 +26,6 @@ public class Note {
     @ElementCollection
     private List<String> noteAccessList;
 
+    private String usernameAccessList;
+
 }

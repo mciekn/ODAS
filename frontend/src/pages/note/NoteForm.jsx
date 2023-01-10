@@ -12,10 +12,12 @@ export const NoteForm = () => {
     const {noteId} = useParams();
     const [note, setNote] = useState({
         content: '',
-        accessLevel: '0'
+        accessLevel: '0',
+        usernameAccessList: ';'
     });
     let [renderedHTML, setRenderedHTML] = useState("");
     const [password, setPassword] = useState("");
+    const [users, setUsers] = useState("");
 
     useEffect(() => {
         if (noteId !== 'new') {
@@ -74,8 +76,17 @@ export const NoteForm = () => {
         setRenderedHTML(renderedHTML);
     }
 
+    function addShared(){
+        let usernameList = users;
+        console.log(users);
+        let finalUsernameList = (note.usernameAccessList + usernameList + ";");
+        setNote({...note, usernameAccessList: finalUsernameList});
+        console.log("Usernames with access: "+finalUsernameList);
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
 
         if (note.id) {
             await noteApi.update(note.id, note, keycloak.token)
@@ -118,7 +129,7 @@ export const NoteForm = () => {
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <div class="btn-group btn-group-toggle" onChange={onChangeValue} >
+                    <span class="btn-group btn-group-toggle" onChange={onChangeValue} >
                         <label className="btn btn-secondary active">
                             <input type="radio" value="0" name="accessLevel" /> Private
                         </label>
@@ -128,7 +139,11 @@ export const NoteForm = () => {
                         <label className="btn btn-secondary">
                             <input type="radio" value="2" name="accessLevel" /> Public
                         </label>
-                    </div>
+                    </span>
+                    <span id="sharedUsers" style={{display: note.accessLevel === "1" ? 'inline' : 'none' }}> Usernames (separated with ";"):
+                        <input type='text' id='users' name='users' value={users || ""} onInput={e => setUsers(e.target.value)}/>
+                        <Button color="primary" onClick={addShared} >Add</Button>{' '}
+                    </span>
                 </FormGroup>
                 <FormGroup>
                     <Button color="primary" type="submit">Save</Button>{' '}
