@@ -13,7 +13,7 @@ export const NoteForm = () => {
     const [note, setNote] = useState({
         content: '',
         accessLevel: '0',
-        usernameAccessList: ';'
+        usernameAccessRequestList: ';'
     });
     let [renderedHTML, setRenderedHTML] = useState("");
     const [password, setPassword] = useState("");
@@ -79,8 +79,8 @@ export const NoteForm = () => {
     function addShared(){
         let usernameList = users;
         console.log(users);
-        let finalUsernameList = (note.usernameAccessList + usernameList + ";");
-        setNote({...note, usernameAccessList: finalUsernameList});
+        let finalUsernameList = (note.usernameAccessRequestList + usernameList + ";");
+        setNote({...note, usernameAccessRequestList: finalUsernameList});
         console.log("Usernames with access: "+finalUsernameList);
     }
 

@@ -26,6 +26,9 @@ public class Note {
     @ElementCollection
     private List<String> noteAccessList;
 
-    private String usernameAccessList;
+    @ElementCollection
+    private List<String> nameAccessList;
+
+    private String usernameAccessRequestList;
 
 }

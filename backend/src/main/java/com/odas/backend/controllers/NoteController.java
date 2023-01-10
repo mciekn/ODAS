@@ -28,7 +28,7 @@ public class NoteController {
         log.debug("Find all notes for user with id"+principal.getSubject());
         return noteService.findAll()
                 .stream()
-                .filter(n -> n.getNoteAccessList().contains(principal.getSubject()) || Objects.equals(n.getAccessLevel(), "2"))
+                .filter(n -> n.getNoteAccessList().contains(principal.getSubject()) || Objects.equals(n.getAccessLevel(), "2") || n.getNameAccessList().contains(principal.getClaim("preferred_username")))
                 .collect(Collectors.toList());
     }
 
@@ -36,7 +36,7 @@ public class NoteController {
     @GetMapping("/{id}")
     Note findById(@PathVariable Long id, @AuthenticationPrincipal Jwt principal){
         log.debug("Find note with id: {}", id);
-        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject()) || Objects.equals(noteService.findById(id).getAccessLevel(), "2")){
+        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject()) || Objects.equals(noteService.findById(id).getAccessLevel(), "2") || noteService.findById(id).getNameAccessList().contains(principal.getClaim("preferred_username"))){
             return noteService.findById(id);
         }
         else{
@@ -47,7 +47,21 @@ public class NoteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     Note createNote(@RequestBody Note note, @AuthenticationPrincipal Jwt principal){
-        log.debug("Create note: {}", note, "for user with id: {}", principal.getSubject());
+        log.debug("Create note: {}", note, "for user with id: {} ");
+        log.debug("ID: "+principal.getSubject());
+        log.debug("Username: "+ principal.getClaim("preferred_username"));
+        if(note.getAccessLevel().equals("1")){
+            String[] usernames = note.getUsernameAccessRequestList().split(";");
+            if(note.getNameAccessList() == null){
+                note.setNameAccessList(new ArrayList<>());
+            }
+            for(String name : usernames){
+                if(!note.getNameAccessList().contains(name) && !(name.equals(""))){
+                    note.getNameAccessList().add(name);
+                }
+            }
+            note.setUsernameAccessRequestList(";");
+        }
         if(note.getNoteAccessList() == null) {
             note.setNoteAccessList(new ArrayList<>());
             note.getNoteAccessList().add(principal.getSubject());
