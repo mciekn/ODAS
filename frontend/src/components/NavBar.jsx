@@ -23,7 +23,6 @@ export const NavBar = () => {
     return (
         <Navbar color="dark" dark expand="md">
             <Nav>
-                <NavbarBrand tag={NavLink} to="/" style={style}>Home</NavbarBrand>
                 <NavbarBrand tag={NavLink} to="/notes" style={style}>Notes</NavbarBrand>
                 {!keycloak.authenticated && (
                     <NavbarBrand tag={NavLink} to="/login" onClick={handleLogIn}>
