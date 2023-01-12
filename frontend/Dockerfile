@@ -12,6 +12,9 @@ RUN npm run build
 FROM nginx:1.22.1-alpine
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY frontendcert.pem /etc/frontendcert.pem
+COPY frontendkey.pem /etc/frontendkey.pem
+COPY passwd.txt /etc/passwd.txt
 COPY --from=builder /app/build /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -4,6 +4,13 @@ logging:
 
 server:
   port: 8081
+  ssl:
+    enabled: true
+    key-alias: selfsigned
+    key-store: "/etc/keystore.jks"
+    key-store-type: jks
+    key-store-password: password
+    key-password: password
 
 spring:
   security:
@@ -15,7 +22,7 @@ spring:
 
 app:
   cors:
-    allowed-origins: http://localhost:3000
+    allowed-origins: https://localhost:3000
   jwt:
     issuer-uri: http://localhost:8080/realms/app
     resource-client-ids: frontend-web

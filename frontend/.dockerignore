@@ -5,3 +5,6 @@
 !nginx.conf
 !package.json
 !package-lock.json
+!frontendcert.pem
+!frontendkey.pem
+!passwd.txt
