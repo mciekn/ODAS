@@ -4,6 +4,13 @@ logging:
 
 server:
   port: 8081
+  ssl:
+    enabled: true
+    key-alias: selfsigned
+    key-store: "/etc/keystore.jks"
+    key-store-type: jks
+    key-store-password: password
+    key-password: password
 
 spring:
   security:
