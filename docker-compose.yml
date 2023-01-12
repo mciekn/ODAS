@@ -50,21 +50,23 @@ services:
       timeout: 5s
       retries: 5
 
-  keycloak-initializer:
-    container_name: keycloakInitializer
-    build:
-      context: keycloakInitializer
-      dockerfile: Dockerfile
-    image: keycloakinitializer:latest
-    networks:
-      - network
-    depends_on:
-      keycloak:
-        condition: service_healthy
+#  keycloak-initializer:
+#    container_name: keycloakInitializer
+#    build:
+#      context: keycloakInitializer
+#      dockerfile: Dockerfile
+#    image: keycloakinitializer:latest
+#    networks:
+#      - network
+#    depends_on:
+#      keycloak:
+#        condition: service_healthy
 
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.1
     container_name: keycloak
+    volumes:
+      - ./keycloak.jks:/keycloak.jks
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
@@ -73,16 +75,16 @@ services:
       - KC_DB_URL_DATABASE=keycloak
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
-    command: start-dev
+    command: start --hostname-url=https://localhost:8080/ --https-key-store-file=./keycloak.jks
     ports:
-      - '8080:8080'
+      - '8080:8443'
     networks:
       - network
     depends_on:
       keycloak-db:
         condition: service_healthy
     healthcheck:
-      test: "curl -f http://localhost:8080/admin || exit 1"
+      test: "curl -f -k https://localhost:8443/admin/master/console/ || exit 1"
 
   keycloak-db:
     image: mysql:8.0.31

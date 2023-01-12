@@ -8,6 +8,7 @@ COPY pom.xml .
 #RUN ./mvnw dependency:go-offline
 
 COPY src src
+COPY src/main/resources/truststore.jks /etc/truststore.jks
 RUN ./mvnw package -DskipTests
 
 ARG JAR_FILE=target/*.jar
@@ -18,6 +19,7 @@ FROM --platform=linux/amd64 openjdk:17-jdk-alpine
 WORKDIR app
 ARG EXTRACTED=app/target/extracted
 COPY src/main/resources/keystore.jks /etc/keystore.jks
+COPY src/main/resources/truststore.jks /etc/truststore.jks
 COPY --from=builder ${EXTRACTED}/dependencies/ ./
 COPY --from=builder ${EXTRACTED}/spring-boot-loader/ ./
 COPY --from=builder ${EXTRACTED}/snapshot-dependencies/ ./

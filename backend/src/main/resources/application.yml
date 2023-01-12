@@ -11,6 +11,9 @@ server:
     key-store-type: jks
     key-store-password: password
     key-password: password
+    trust-store: "etc/truststore.jks"
+    trust-store-password: password
+    trust-store-type: jks
 
 spring:
   security:
@@ -24,7 +27,7 @@ app:
   cors:
     allowed-origins: https://localhost:3000
   jwt:
-    issuer-uri: http://localhost:8080/realms/app
+    issuer-uri: https://localhost:8443/realms/app
     resource-client-ids: frontend-web
 
 ---
@@ -45,7 +48,7 @@ spring:
 
 app:
   jwt:
-    issuer-uri: http://keycloak:8080/realms/app
+    issuer-uri: https://keycloak:8443/realms/app
 
 ---
 

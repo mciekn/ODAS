@@ -4,7 +4,7 @@ logging:
 
 app:
   keycloak:
-    server-url: http://keycloak:8080
+    server-url: https://keycloak:8080
     realm-name: app
     clients:
       - id: frontend-web
@@ -28,4 +28,4 @@ spring:
 
 app:
   keycloak:
-    server-url: http://localhost:8080
+    server-url: https://localhost:8080
