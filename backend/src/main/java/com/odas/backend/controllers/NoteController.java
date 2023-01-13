@@ -56,8 +56,8 @@ public class NoteController {
                 note.setNameAccessList(new ArrayList<>());
             }
             for(String name : usernames){
-                if(!note.getNameAccessList().contains(name) && !(name.equals(""))){
-                    note.getNameAccessList().add(name);
+                if(!note.getNameAccessList().contains(name.toLowerCase()) && !(name.equals(""))){
+                    note.getNameAccessList().add(name.toLowerCase());
                 }
             }
             note.setUsernameAccessRequestList(";");

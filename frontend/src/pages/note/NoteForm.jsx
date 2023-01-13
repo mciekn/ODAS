@@ -106,13 +106,14 @@ export const NoteForm = () => {
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="content">Content</Label>
-                    <Input
+                    <textarea
+                        class="form-control"
                         id="content-1"
                         name="content"
                         type="text"
                         value={note.content || ""}
                         onChange={handleChange}
-                        autoComplete="content"/>
+                        autoComplete="content"></textarea>
                 </FormGroup>
                 <FormGroup>
                     <Label for="encrypt">Encrypt with password</Label>
@@ -130,7 +131,7 @@ export const NoteForm = () => {
                 </FormGroup>
                 <FormGroup>
                     <span class="btn-group btn-group-toggle" onChange={onChangeValue} >
-                        <label className="btn btn-secondary active">
+                        <label className="btn btn-secondary">
                             <input type="radio" value="0" name="accessLevel" /> Private
                         </label>
                         <label className="btn btn-secondary">
