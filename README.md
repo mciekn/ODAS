@@ -1,5 +1,4 @@
 # Projekt - Ochrona Danych w Systemach Informatycznych
-___
 
 
 Aby uruchomić aplikację, należy wykonać komendę
@@ -12,7 +11,7 @@ Po skomponowaniu całości, serwowane będą usługi pod następującymi adresam
 * https://localhost:8081/ - *backend*
 * http://localhost:8080/ - *konsola serwisu autoryzującego*
 
-Następnie, w swojej przeglądarce należy odwiedzić adresy frontendu (https://localhost:3000/) i backendu (https://localhost:8081/), akceptując certyfikaty którymi się legitymują - jest to krok konieczny, ze względu na fakt iż są one samopodpisane.
+Następnie, w swojej przeglądarce należy odwiedzić adresy frontendu (https://localhost:3000/) i backendu (https://localhost:8081/), akceptując certyfikaty którymi się legitymują - jest to krok konieczny, ponieważ są one samopodpisane.
 
 Aby zacząć krzystać z aplikacji, należy się zarejestrować. Po zarejestrowaniu, w sekcji *notes* pojawią się wszystkie notatki stworzone lub udostępnione 
 użytkownikowi.
