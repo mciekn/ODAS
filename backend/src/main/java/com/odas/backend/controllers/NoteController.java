@@ -62,6 +62,9 @@ public class NoteController {
             }
             note.setUsernameAccessRequestList(";");
         }
+        if(note.getAccessLevel().equals("0")){
+            note.setUsernameAccessRequestList(";");
+        }
         if(note.getNoteAccessList() == null) {
             note.setNoteAccessList(new ArrayList<>());
             note.getNoteAccessList().add(principal.getSubject());
@@ -75,12 +78,24 @@ public class NoteController {
         if(!note.getNoteAccessList().contains(principal.getSubject())){
             note.getNoteAccessList().add(principal.getSubject());
         }
+        if(note.getAccessLevel().equals("0")){
+            note.setUsernameAccessRequestList(";");
+            if(!(note.getNameAccessList() == null)){
+                note.getNameAccessList().clear();
+            }
+        }
         return noteService.update(id, note);
     }
 
     @DeleteMapping("/{id}")
-    void deleteNote(@PathVariable Long id){
+    void deleteNote(@PathVariable Long id, @AuthenticationPrincipal Jwt principal){
         log.debug("Delete note with id: {}", id);
-        noteService.deleteById(id);
+        if(noteService.findById(id).getNoteAccessList().contains(principal.getSubject()) || Objects.equals(noteService.findById(id).getAccessLevel(), "2") || noteService.findById(id).getNameAccessList().contains(principal.getClaim("preferred_username"))){
+            noteService.deleteById(id);
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "401");
+        }
+
     }
 }
