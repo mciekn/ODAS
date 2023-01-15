@@ -2,10 +2,10 @@ version: "3.9"
 services:
   frontend:
     container_name: frontend
-    build:
-      context: frontend
-      dockerfile: Dockerfile
-    image: frontend:latest
+    #build:
+    #  context: frontend
+    #  dockerfile: Dockerfile
+    image: mciekn/frontend:latest
     ports:
       - '3000:3000'
     networks:
@@ -15,10 +15,10 @@ services:
 
   backend:
     container_name: backend
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    image: backend:latest
+    #build:
+    #  context: backend
+    #  dockerfile: Dockerfile
+    image: mciekn/backend:latest
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     ports:
