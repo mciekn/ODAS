@@ -48,27 +48,27 @@ export const NoteForm = () => {
         const accessValue = event.target.value;
         const accessLevel = event.target.name;
         setNote({...note, [accessLevel]: accessValue});
-        console.log(accessValue);
+        //console.log(accessValue);
     }
 
     function encrypt(){
         let pswd = password;
         let md = new MarkdownIt()
-        console.log("encrypting..");
-        console.log(password);
+        //console.log("encrypting..");
+        //console.log(password);
         let enc = note.content;
-        console.log(enc);
+        //console.log(enc);
         let cipher = AES.encrypt(enc, pswd).toString();
         setNote({...note, content: cipher});
         let renderedHTML = md.render(cipher);
         setRenderedHTML(renderedHTML);
-        console.log(cipher);
+        //console.log(cipher);
     }
 
     function decrypt(){
         let pswd = password;
         let md = new MarkdownIt()
-        console.log("decrypting..")
+        //console.log("decrypting..")
         let encrypted = note.content;
         let decrypted = AES.decrypt(encrypted, pswd).toString(enc.Utf8);
         setNote({...note, content: decrypted});
@@ -78,10 +78,10 @@ export const NoteForm = () => {
 
     function addShared(){
         let usernameList = users;
-        console.log(users);
+        //console.log(users);
         let finalUsernameList = (note.usernameAccessRequestList + usernameList + ";");
         setNote({...note, usernameAccessRequestList: finalUsernameList});
-        console.log("Usernames with access: "+finalUsernameList);
+        //console.log("Usernames with access: "+finalUsernameList);
     }
 
     const handleSubmit = async (event) => {
@@ -90,10 +90,10 @@ export const NoteForm = () => {
 
         if (note.id) {
             await noteApi.update(note.id, note, keycloak.token)
-            console.log(note)
+            //console.log(note)
         } else {
             await noteApi.create(note, keycloak.token)
-            console.log(note)
+            //console.log(note)
         }
         navigate('/notes')
     }
